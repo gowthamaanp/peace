@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1036973154459",
+    "project_id": "peace-app-52c2d",
+    "storage_bucket": "peace-app-52c2d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036973154459:android:bbb7aff7886c41db5b663e",
+        "android_client_info": {
+          "package_name": "com.gowthamaan.peace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiBwjT6y_9LlKilBgC4ByMOaimtf8CDUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

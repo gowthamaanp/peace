@@ -1,0 +1,68 @@
+name: peace
+
+description: "Peace - A comprehensive mental health and wellness application with mood tracking, mental health assessments (DASS-21, PHQ-9), and personalized analytics."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_bloc_form_plus: ^0.2.3
+  permission_handler: ^12.0.1
+  http: ^1.5.0
+  internet_connection_checker: ^3.0.1
+  url_launcher: ^6.3.2
+  fl_chart: ^1.1.0
+
+  # Firebase
+  firebase_core: ^4.1.1
+  firebase_auth: ^6.1.0
+  cloud_firestore: ^6.0.2
+
+  # State Management & Storage
+  provider: ^6.1.2
+  shared_preferences: ^2.3.4
+  intl: ^0.20.2
+
+  # OTP UI
+  pinput: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+
+  flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans-Light.ttf
+        - asset: assets/fonts/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans-Bold.ttf
+
+    - family: Teachers
+      fonts:
+        - asset: assets/fonts/Teachers-Regular.ttf
+        - asset: assets/fonts/Teachers-Italic.ttf
+        - asset: assets/fonts/Teachers-Bold.ttf
