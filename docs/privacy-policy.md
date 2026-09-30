@@ -1,7 +1,7 @@
 # Privacy Policy for Peace
 
 **Effective Date:** November 24, 2025  
-**Last Updated:** November 24, 2025
+**Last Updated:** September 30, 2026
 
 ## Introduction
 
@@ -38,7 +38,7 @@ Peace collects sensitive mental health information to provide you with assessmen
 - **Mood Tracking Data**: Daily mood entries including emoji selections, mood labels, dates, and timestamps
 - **Mood Streaks**: Consecutive days of mood logging
 - **Mental Health Assessment Results**:
-  - DASS-21 (Depression, Anxiety, and Stress Scale) scores and responses
+  - DASS-42 (Depression, Anxiety, and Stress Scales) scores and responses
   - PHQ-9 (Patient Health Questionnaire) scores and responses
   - PHQ-15 assessment scores and responses
   - GAD-7 (Generalized Anxiety Disorder) scores and responses
@@ -73,7 +73,7 @@ We use the collected information for the following purposes:
 - **Authentication**: Verify your identity through phone number OTP authentication
 - **Profile Management**: Create and maintain your user profile
 - **Mood Tracking**: Record and display your daily mood entries and streaks
-- **Mental Health Assessments**: Provide standardized mental health screening tools (DASS-21, PHQ-9)
+- **Mental Health Assessments**: Provide standardized mental health screening tools (PHQ-9, GAD-7, PHQ-15, DASS-42)
 - **Analytics and Insights**: Generate personalized charts, graphs, and trend analysis of your mental health data
 - **Motivational Support**: Display relevant quotes and supportive content
 

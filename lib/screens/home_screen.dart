@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:peace/models/quote.dart';
 import 'package:peace/models/user.dart';
 import 'package:peace/screens/tabs/analytics_tab.dart';
@@ -743,21 +742,31 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void getQuote() async {
-    final bool isConnected =
-        await InternetConnectionChecker.instance.hasConnection;
+  static final List<Quote> _fallbackQuotes = [
+    Quote("You don't have to control your thoughts. You just have to stop letting them control you.", "Dan Millman"),
+    Quote("Almost everything will work again if you unplug it for a few minutes, including you.", "Anne Lamott"),
+    Quote("There is hope, even when your brain tells you there isn't.", "John Green"),
+    Quote("Self-care is how you take your power back.", "Lalah Delia"),
+    Quote("You are not your illness. You have an individual story to tell.", "Julian Seifter"),
+  ];
 
-    if (isConnected) {
-      var url = Uri.parse("https://zenquotes.io/api/random");
-      http.Response quoteResponse = await http.get(url);
-      var jsonFeedback = convert.jsonDecode(quoteResponse.body);
-      setState(() {
-        quote = Quote.fromJson(jsonFeedback[0]);
-      });
-    } else {
-      quote = Quote("No Internet Connection", "");
-      setState(() {});
+  void getQuote() async {
+    Quote result;
+    try {
+      final response = await http
+          .get(Uri.parse("https://zenquotes.io/api/random"))
+          .timeout(const Duration(seconds: 8));
+      final jsonFeedback = convert.jsonDecode(response.body);
+      result = Quote.fromJson(jsonFeedback[0]);
+    } catch (e) {
+      debugPrint('Quote fetch failed, using fallback: $e');
+      result = _fallbackQuotes[
+          DateTime.now().millisecondsSinceEpoch % _fallbackQuotes.length];
     }
+    if (!mounted) return;
+    setState(() {
+      quote = result;
+    });
   }
 
   Future<void> _launchURL() async {

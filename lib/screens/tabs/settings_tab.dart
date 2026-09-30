@@ -8,7 +8,6 @@ import 'package:peace/screens/tabs/about_tab.dart';
 import 'package:peace/screens/tabs/questionnaires_info_tab.dart';
 import 'package:peace/services/firestore_service.dart';
 import 'package:peace/services/user_profile_service.dart';
-import 'package:peace/models/user.dart';
 import 'package:peace/screens/auth/phone_login_screen.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -126,7 +125,7 @@ class SettingsPage extends StatelessWidget {
                       iconColor: Colors.brown,
                       onTap: () async {
                         final uri = Uri.parse(
-                          'https://gowthamaanp.github.io/peace_app/privacy-policy.html',
+                          'https://gowthamaanp.github.io/peace/privacy-policy.html',
                         );
                         await launchUrl(
                           uri,
@@ -576,6 +575,58 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  void _showReauthRequiredDialog(
+    BuildContext context,
+    double height,
+    String message,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Sign in again',
+            style: TextStyle(fontSize: height * 0.028),
+          ),
+          content: Text(message, style: TextStyle(fontSize: height * 0.02)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                Navigator.pop(context);
+              },
+              child: Text('Cancel', style: TextStyle(fontSize: height * 0.02)),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await auth.FirebaseAuth.instance.signOut();
+                UserProfileService().clearUserProfile();
+                if (!dialogContext.mounted) return;
+                Navigator.of(
+                  dialogContext,
+                  rootNavigator: true,
+                ).pushAndRemoveUntil(
+                  CupertinoPageRoute<bool>(
+                    builder: (BuildContext context) => PhoneLoginScreen(),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: Text(
+                'Sign in again',
+                style: TextStyle(fontSize: height * 0.02),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showDeleteAccountDialog(BuildContext context, double height) {
     final theme = Theme.of(context);
 
@@ -621,9 +672,15 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
+              _buildDeleteItem('Mood entries and streaks', height, context),
               _buildDeleteItem('Test results and history', height, context),
-              _buildDeleteItem('Profile information', height, context),
+              _buildDeleteItem(
+                'Profile and emergency contact details',
+                height,
+                context,
+              ),
               _buildDeleteItem('Appointments and records', height, context),
+              _buildDeleteItem('Your phone number sign-in', height, context),
               SizedBox(height: 10),
               Text(
                 'will be permanently deleted.',
@@ -655,6 +712,20 @@ class SettingsPage extends StatelessWidget {
                     throw Exception('No user logged in');
                   }
 
+                  // Firebase only deletes the sign-in record after a recent
+                  // sign-in, so confirm identity before deleting any data.
+                  final lastSignIn = currentUser.metadata.lastSignInTime;
+                  if (lastSignIn == null ||
+                      DateTime.now().difference(lastSignIn) >
+                          const Duration(minutes: 4)) {
+                    _showReauthRequiredDialog(
+                      context,
+                      height,
+                      'For your security, please sign in again to confirm it\'s you, then delete your account from Settings.',
+                    );
+                    return;
+                  }
+
                   // Show loading dialog
                   showDialog(
                     context: context,
@@ -683,9 +754,6 @@ class SettingsPage extends StatelessWidget {
                   final firestoreService = FirestoreService();
                   final deleteResult = await firestoreService.deleteUserData(
                     uid: currentUser.uid,
-                    registerNumber: user.registerNumber.isNotEmpty
-                        ? user.registerNumber
-                        : null,
                   );
 
                   if (deleteResult != 'SUCCESS') {
@@ -744,14 +812,17 @@ class SettingsPage extends StatelessWidget {
                   // Close loading dialog if open
                   Navigator.pop(context);
 
-                  String errorMessage = 'Error deleting account. ';
-
                   if (e.code == 'requires-recent-login') {
-                    errorMessage +=
-                        'Please log out and log back in, then try again.';
-                  } else {
-                    errorMessage += 'Please try again later.';
+                    _showReauthRequiredDialog(
+                      context,
+                      height,
+                      'Your data has been deleted. To finish removing your phone number, sign in again and tap Delete Account once more.',
+                    );
+                    return;
                   }
+
+                  const errorMessage =
+                      'Error deleting account. Please try again later.';
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

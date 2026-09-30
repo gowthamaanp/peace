@@ -2,8 +2,8 @@
 
 A comprehensive Flutter-based mobile application designed to support mental health and wellness through mood tracking, standardized mental health assessments, and personalized analytics.
 
-**Website & APK download:** https://gowthamaanp.github.io/peace_app/ (served from [docs/](docs/) via GitHub Pages)
-**Privacy Policy:** https://gowthamaanp.github.io/peace_app/privacy-policy.html
+**Website & APK download:** https://gowthamaanp.github.io/peace/ (served from [docs/](docs/) via GitHub Pages)
+**Privacy Policy:** https://gowthamaanp.github.io/peace/privacy-policy.html
 
 ## 🌟 Features
 
@@ -12,8 +12,8 @@ A comprehensive Flutter-based mobile application designed to support mental heal
 - **🔐 Phone Authentication**: Secure Firebase phone authentication with OTP verification
 - **😊 Daily Mood Tracking**: Track your daily mood with emoji-based logging and streak tracking
 - **📊 Mental Health Assessments**:
-  - DASS-21 (Depression, Anxiety, Stress Scale)
-  - PHQ-9 (Patient Health Questionnaire)
+  - PHQ-9 (depression), GAD-7 (anxiety), PHQ-15 (physical symptoms) and a PHQ panic module
+  - DASS-42 (Depression, Anxiety, Stress Scales), optional
 - **📈 Analytics Dashboard**: Visualize mood trends and assessment history with interactive charts
 - **💬 Motivational Quotes**: Daily inspirational quotes to uplift your spirits
 - **🌓 Theme Support**: Light and dark theme modes with seamless switching
@@ -28,8 +28,8 @@ A comprehensive Flutter-based mobile application designed to support mental heal
 
 ### Assessment Features
 
-- **DASS-21 Assessment**: Comprehensive evaluation of depression, anxiety, and stress levels
-- **PHQ-9 Assessment**: Multi-section questionnaire for mental health screening
+- **PHQ Assessment**: Multi-section questionnaire (PHQ-15, GAD-7, panic module, PHQ-9)
+- **DASS-42 Assessment**: 42 items, 14 each for depression, anxiety and stress
 - Test history tracking and results visualization
 - Score comparison and trend analysis
 
@@ -218,7 +218,7 @@ users/
 
 ## 🔒 Firestore Security Rules
 
-Rules live in [firestore.rules](firestore.rules) (scoped to `request.auth.uid == userId` for every document under `users/{userId}/**`). Deploy after any change:
+Rules live in [firestore.rules](firestore.rules) (each user can only read and write their own `users/{uid}/**`, `user_profiles/{uid}` and `test_results/{uid}/**` documents). Deploy after any change:
 
 ```bash
 firebase deploy --only firestore:rules

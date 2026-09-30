@@ -11,3 +11,6 @@
 -keepattributes *Annotation*
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.** { *; }
+
+# Flutter's engine references Play Core (deferred components) even when unused
+-dontwarn com.google.android.play.core.**

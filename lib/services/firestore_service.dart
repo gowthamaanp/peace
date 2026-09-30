@@ -112,59 +112,44 @@ class FirestoreService {
     }
   }
 
-  /// Delete all user data from Firestore
-  /// Deletes from: user_profiles, users (by registerNumber), test_results, and appointments
-  Future<String> deleteUserData({
-    required String uid,
-    String? registerNumber,
-  }) async {
+  /// Permanently deletes every Firestore document belonging to [uid].
+  /// Subcollections are deleted explicitly because deleting a parent
+  /// document in Firestore does not remove its subcollections.
+  Future<String> deleteUserData({required String uid}) async {
     try {
-      // Delete user profile
+      final userRef = _db.collection('users').doc(uid);
+      await _deleteAll(userRef.collection('mood_entries'));
+      await _deleteAll(userRef.collection('mood_metadata'));
+      await userRef.delete();
+
+      final resultsRef = _db.collection('test_results').doc(uid);
+      await _deleteAll(resultsRef.collection('results'));
+      await resultsRef.delete();
+
       await _db.collection('user_profiles').doc(uid).delete();
 
-      // Delete user registration data if registerNumber is provided
-      if (registerNumber != null && registerNumber.isNotEmpty) {
-        await _db.collection('users').doc(registerNumber).delete();
-
-        // Delete test results
-        final testResultsSnapshot = await _db
-            .collection('test_results')
-            .doc(registerNumber)
-            .collection('results')
-            .get();
-
-        for (var doc in testResultsSnapshot.docs) {
-          await doc.reference.delete();
-        }
-
-        // Delete the test_results parent document
-        await _db.collection('test_results').doc(registerNumber).delete();
-
-        // Delete appointments
-        final appointmentsSnapshot = await _db
-            .collection('appointments')
-            .where('registerNumber', isEqualTo: registerNumber)
-            .get();
-
-        for (var doc in appointmentsSnapshot.docs) {
-          await doc.reference.delete();
-        }
-      }
-
-      // Delete appointments by UID as fallback
-      final appointmentsByUidSnapshot = await _db
-          .collection('appointments')
-          .where('uid', isEqualTo: uid)
-          .get();
-
-      for (var doc in appointmentsByUidSnapshot.docs) {
-        await doc.reference.delete();
-      }
+      await _deleteAll(
+        _db.collection('appointments').where('uid', isEqualTo: uid),
+      );
 
       return 'SUCCESS';
     } catch (e) {
       debugPrint('Error deleting user data: $e');
       return 'ERROR: ${e.toString()}';
+    }
+  }
+
+  Future<void> _deleteAll(Query<Map<String, dynamic>> query) async {
+    const pageSize = 400;
+    while (true) {
+      final snapshot = await query.limit(pageSize).get();
+      if (snapshot.docs.isEmpty) return;
+      final batch = _db.batch();
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+      if (snapshot.docs.length < pageSize) return;
     }
   }
 

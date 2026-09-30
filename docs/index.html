@@ -3,49 +3,673 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Peace — Mental Health &amp; Wellness</title>
-  <meta name="description" content="Peace is a mobile companion for daily mood tracking and standardized mental health check-ins (DASS-21, PHQ-9)." />
+  <title>Peace — A daily mental health companion</title>
+  <meta name="description" content="Peace is a free Android app for daily mood check-ins and clinically validated self-screening (PHQ-9, GAD-7, PHQ-15, DASS-42), with the Tele-MANAS 14416 helpline one tap away. Developed at Puducherry Technological University." />
+  <meta name="theme-color" content="#0B3B8C" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Peace — A daily mental health companion" />
+  <meta property="og:description" content="Daily mood check-ins, validated self-screening and Tele-MANAS support in one private Android app." />
+  <meta property="og:image" content="https://gowthamaanp.github.io/peace/screens/home.jpg" />
+  <meta property="og:url" content="https://gowthamaanp.github.io/peace/" />
   <link rel="icon" href="logo.png" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0A1733;
+      --ink-2: #3B4A66;
+      --muted: #66728A;
+      --bg: #F6F8FC;
+      --surface: #FFFFFF;
+      --line: #E3E8F2;
+      --brand: #1565C0;
+      --brand-2: #1E88E5;
+      --brand-deep: #0B3B8C;
+      --sky: #E8F1FD;
+      --amber: #FF9F1C;
+      --amber-soft: #FFF3DF;
+      --radius: 22px;
+      --shadow: 0 30px 60px -20px rgba(11, 59, 140, .28), 0 12px 24px -12px rgba(10, 23, 51, .18);
+      --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #EAF0FB;
+        --ink-2: #C3CDE0;
+        --muted: #8E9AB3;
+        --bg: #070D1C;
+        --surface: #0F1830;
+        --line: #1D2946;
+        --brand: #4A9BF0;
+        --brand-2: #6AB0F7;
+        --sky: #10213F;
+        --amber-soft: #2A2112;
+        --shadow: 0 30px 60px -20px rgba(0, 0, 0, .6), 0 12px 24px -12px rgba(0, 0, 0, .5);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    .wrap { max-width: 1160px; margin: 0 auto; padding-inline: 20px; }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: saturate(1.4) blur(14px);
+      -webkit-backdrop-filter: saturate(1.4) blur(14px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    }
+    .nav .wrap { display: flex; align-items: center; gap: 24px; height: 68px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; text-decoration: none; letter-spacing: -.01em; }
+    .brand img { width: 34px; height: 34px; }
+    .nav-links { display: flex; gap: 22px; margin-left: auto; }
+    .nav-links a { text-decoration: none; color: var(--ink-2); font-weight: 600; font-size: .92rem; }
+    .nav-links a:hover { color: var(--brand); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 24px; border-radius: 999px; font-weight: 700; font-size: .98rem;
+      text-decoration: none; border: 1px solid transparent; transition: transform .15s ease, box-shadow .15s ease, background .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--brand) 70%, transparent); }
+    .btn-primary:hover { background: var(--brand-deep); }
+    .btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+    .btn-sm { padding: 10px 18px; font-size: .9rem; }
+    .btn svg { width: 18px; height: 18px; }
+
+    /* Hero */
+    .hero { position: relative; overflow: hidden; padding: 72px 0 40px; }
+    .hero::before {
+      content: ""; position: absolute; inset: -30% -10% auto -10%; height: 120%;
+      background:
+        radial-gradient(40% 50% at 78% 30%, color-mix(in srgb, var(--brand-2) 28%, transparent), transparent 70%),
+        radial-gradient(30% 40% at 12% 10%, color-mix(in srgb, var(--amber) 16%, transparent), transparent 70%);
+      z-index: -1;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px; background: var(--sky); color: var(--brand);
+      font-weight: 700; font-size: .82rem; letter-spacing: .02em;
+    }
+    h1 { font-size: clamp(2.4rem, 5.4vw, 4.1rem); line-height: 1.04; letter-spacing: -.035em; margin: 18px 0 18px; font-weight: 800; }
+    h1 .accent { background: linear-gradient(100deg, var(--brand) 10%, var(--brand-2) 60%, #56B4FF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lede { font-size: 1.15rem; color: var(--ink-2); max-width: 540px; margin: 0 0 30px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .fine { margin-top: 14px; color: var(--muted); font-size: .86rem; }
+
+    .phones { position: relative; height: 620px; }
+    .phone {
+      position: absolute; width: 270px; aspect-ratio: 720 / 1452;
+      border-radius: 40px; padding: 9px; background: #0B0F19;
+      box-shadow: var(--shadow), inset 0 0 0 1.5px #2A3244;
+    }
+    .phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 32px; }
+    .phones .p1 { right: 170px; top: 20px; z-index: 2; transform: rotate(-4deg); }
+    .phones .p2 { right: 0; top: 70px; transform: rotate(5deg); }
+    .float-chip {
+      position: absolute; z-index: 3; background: var(--surface); border: 1px solid var(--line);
+      border-radius: 16px; padding: 12px 16px; box-shadow: var(--shadow); font-weight: 700; font-size: .9rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .float-chip small { display: block; color: var(--muted); font-weight: 500; font-size: .76rem; }
+    .chip-a { left: 0; bottom: 110px; }
+    .chip-b { right: 12px; bottom: 30px; }
+    .dot { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; font-size: 1.1rem; flex: none; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 56px; }
+    .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; }
+    .stat b { display: block; font-size: 1.7rem; letter-spacing: -.02em; color: var(--brand); }
+    .stat span { color: var(--muted); font-size: .9rem; }
+
+    /* Sections */
+    section { padding: 88px 0; }
+    .section-head { max-width: 680px; margin-bottom: 48px; }
+    .kicker { color: var(--brand); font-weight: 800; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; }
+    h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); line-height: 1.1; letter-spacing: -.03em; margin: 10px 0 14px; font-weight: 800; }
+    .section-head p { color: var(--ink-2); font-size: 1.08rem; margin: 0; }
+
+    .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 36px 0; }
+    .feature + .feature { border-top: 1px dashed var(--line); }
+    .feature.rev .feature-media { order: 2; }
+    .feature-media { display: flex; justify-content: center; gap: 18px; position: relative; }
+    .feature-media::before {
+      content: ""; position: absolute; inset: 12% 8%; border-radius: 40px;
+      background: radial-gradient(60% 60% at 50% 50%, color-mix(in srgb, var(--brand-2) 22%, transparent), transparent 70%);
+      z-index: -1;
+    }
+    .feature-media .phone { position: relative; width: 250px; }
+    .feature-media .phone.small { width: 210px; margin-top: 60px; }
+    .feature h3 { font-size: 1.7rem; letter-spacing: -.02em; margin: 14px 0 12px; line-height: 1.15; }
+    .feature p { color: var(--ink-2); margin: 0 0 18px; }
+    .icon-badge { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 1.5rem; }
+    .ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+    .ticks li { display: flex; gap: 10px; align-items: flex-start; color: var(--ink-2); }
+    .ticks li::before {
+      content: ""; flex: none; width: 20px; height: 20px; margin-top: 2px; border-radius: 50%;
+      background: var(--sky) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231565C0' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 12px no-repeat;
+    }
+    @media (prefers-color-scheme: dark) {
+      .ticks li::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238CC2FA' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+      }
+    }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .pill { padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: .82rem; background: var(--surface); border: 1px solid var(--line); }
+
+    /* Assessment table */
+    .assess { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th, td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: var(--surface); }
+    tr:last-child td { border-bottom: none; }
+    td b { font-size: 1.02rem; }
+    td small { color: var(--muted); display: block; }
+    .bands { display: flex; flex-wrap: wrap; gap: 6px; }
+    .band { font-size: .76rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--sky); color: var(--brand); white-space: nowrap; }
+    .note {
+      margin-top: 22px; display: flex; gap: 14px; align-items: flex-start;
+      background: var(--amber-soft); border-radius: 18px; padding: 18px 20px; color: var(--ink-2); font-size: .95rem;
+    }
+    .note b { color: var(--ink); }
+
+    /* Gallery */
+    .gallery-top { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+    .gallery-top .section-head { margin-bottom: 0; }
+    .toggle { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+    .toggle button {
+      border: 0; background: transparent; font: inherit; font-weight: 700; font-size: .9rem; color: var(--muted);
+      padding: 9px 18px; border-radius: 999px; cursor: pointer;
+    }
+    .toggle button[aria-pressed="true"] { background: var(--brand); color: #fff; }
+    #screens { overflow: hidden; }
+    .rail {
+      display: grid; grid-auto-flow: column; grid-auto-columns: 230px; gap: 22px;
+      overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;
+      margin-inline: calc(50% - 50vw); padding: 10px calc(50vw - 50%) 30px;
+      scroll-padding-inline: calc(50vw - 50%);
+    }
+    @media (max-width: 1200px) {
+      .rail { margin-inline: -20px; padding-inline: 20px; scroll-padding-inline: 20px; }
+    }
+    .rail figure { margin: 0; scroll-snap-align: start; }
+    .rail .phone { position: relative; width: 100%; border-radius: 34px; padding: 8px; }
+    .rail .phone img { border-radius: 27px; }
+    .rail figcaption { margin-top: 14px; font-weight: 700; font-size: .95rem; }
+    .rail figcaption small { display: block; color: var(--muted); font-weight: 500; }
+
+    /* Audience cards */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+    .card h3 { margin: 16px 0 8px; font-size: 1.18rem; }
+    .card p { margin: 0; color: var(--ink-2); font-size: .96rem; }
+    .isnt { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .isnt .card h3 { margin-top: 0; }
+    .isnt ul { margin: 10px 0 0; padding-left: 1.1em; color: var(--ink-2); }
+    .isnt li { margin: 6px 0; }
+
+    /* Install */
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: step; }
+    .step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; position: relative; }
+    .step::before {
+      counter-increment: step; content: counter(step);
+      display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px;
+      background: var(--brand); color: #fff; font-weight: 800; margin-bottom: 14px;
+    }
+    .step h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .step p { margin: 0; color: var(--ink-2); font-size: .94rem; }
+
+    /* Crisis + CTA */
+    .crisis {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center;
+      background: linear-gradient(120deg, #0B3B8C, #1565C0 55%, #1E88E5); color: #fff;
+      border-radius: 28px; padding: 34px 38px; box-shadow: var(--shadow);
+    }
+    .crisis .big { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -.02em; line-height: 1; }
+    .crisis p { margin: 6px 0 0; color: #D6E6FF; }
+    .crisis .btn { background: #fff; color: #0B3B8C; }
+    .crisis .phone-ic { width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,.14); display: grid; place-items: center; font-size: 1.8rem; }
+
+    .final { text-align: center; }
+    .final h2 { max-width: 720px; margin-inline: auto; }
+    .final p { color: var(--ink-2); max-width: 560px; margin: 0 auto 28px; }
+
+    footer { border-top: 1px solid var(--line); padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    footer a { color: var(--ink-2); text-decoration: none; font-weight: 600; }
+    footer a:hover { color: var(--brand); }
+    .foot-links { display: flex; gap: 18px; flex-wrap: wrap; }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .btn { transition: none; }
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .phones { height: 560px; max-width: 480px; margin: 0 auto; width: 100%; }
+      .phones .p1 { right: auto; left: 0; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .feature, .feature.rev { grid-template-columns: 1fr; gap: 36px; }
+      .feature.rev .feature-media { order: 0; }
+      .cards, .steps { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .nav .btn { margin-left: auto; }
+    }
+    @media (max-width: 620px) {
+      .hero { padding-top: 44px; }
+      .phones { height: 470px; }
+      .phone { width: 210px; }
+      .phones .p2 { right: 0; top: 50px; }
+      .chip-a { bottom: 70px; }
+      .chip-b { display: none; }
+      .feature, .feature.rev { grid-template-columns: minmax(0, 1fr); }
+      .feature > * { min-width: 0; }
+      .feature-media { gap: 12px; }
+      .feature-media .phone { width: min(200px, 52vw); }
+      .feature-media .phone.small { width: min(150px, 38vw); margin-top: 40px; }
+      .cards, .steps, .isnt { grid-template-columns: 1fr; }
+      .stats { gap: 10px; }
+      .stat { padding: 14px 16px; }
+      .stat b { font-size: 1.35rem; }
+      .crisis { grid-template-columns: 1fr; padding: 28px 24px; }
+      .crisis .phone-ic { display: none; }
+      section { padding: 64px 0; }
+    }
+  </style>
 </head>
 <body>
+
+<nav class="nav" aria-label="Main">
   <div class="wrap">
-    <header class="hero">
-      <img class="logo" src="logo.png" alt="Peace app logo" />
-      <h1>Peace</h1>
-      <p class="tagline">A daily companion for your mental well-being — mood tracking, guided check-ins, and gentle insight into how you're really doing.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="downloads/peace.apk" download>Download for Android</a>
-        <a class="btn btn-secondary" href="privacy-policy.html">Privacy Policy</a>
-      </div>
-      <p class="note">Direct APK download (Android). Not yet on Google Play.</p>
-    </header>
-
-    <section>
-      <div class="card-grid">
-        <div class="card">
-          <h3>Daily mood tracking</h3>
-          <p>Log how you feel in seconds and build a streak, like a habit tracker for your mind.</p>
-        </div>
-        <div class="card">
-          <h3>Standardized check-ins</h3>
-          <p>DASS-21 and PHQ-9 — the same validated questionnaires mental health professionals use.</p>
-        </div>
-        <div class="card">
-          <h3>Trends over time</h3>
-          <p>Simple charts show how your mood and scores change, so patterns are easier to spot.</p>
-        </div>
-        <div class="card">
-          <h3>Private by design</h3>
-          <p>Phone-number sign-in, encrypted storage, and full control to export or delete your data.</p>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <p>Peace is not a replacement for professional diagnosis or treatment. If you're in crisis, please contact a local emergency service or helpline.</p>
-      <p><a href="privacy-policy.html">Privacy Policy</a> · <a href="mailto:info.ptupeace@gmail.com">Contact</a> · <a href="https://github.com/gowthamaanp/peace_app">Source</a></p>
-    </footer>
+    <a class="brand" href="#top"><img src="logo.png" alt="" />Peace</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#assessments">Assessments</a>
+      <a href="#screens">Screens</a>
+      <a href="#counsellors">For counsellors</a>
+      <a href="#install">Install</a>
+    </div>
+    <a class="btn btn-primary btn-sm" href="downloads/peace.apk" download>Download</a>
   </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">Free Android app · Developed at Puducherry Technological University</span>
+        <h1>A calm daily check-in for your <span class="accent">mental well-being.</span></h1>
+        <p class="lede">Peace helps you notice how you're doing: log your mood in seconds, take the same validated screening questionnaires professionals use, watch your trends over time, and reach a counsellor with one tap when you need to.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="downloads/peace.apk" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+            Download for Android
+          </a>
+          <a class="btn btn-ghost" href="#features">See how it works</a>
+        </div>
+        <p class="fine">Free · Direct APK download (~57 MB) · Sign in with your phone number</p>
+      </div>
+
+      <div class="phones reveal" aria-hidden="true">
+        <div class="phone p1"><img data-theme-src="home" src="screens/home.jpg" alt="" /></div>
+        <div class="phone p2"><img data-theme-src="progress" src="screens/progress.jpg" alt="" /></div>
+        <div class="float-chip chip-a"><span class="dot" style="background:var(--amber-soft)">🔥</span><div>Daily streak<small>Build a gentle habit</small></div></div>
+        <div class="float-chip chip-b"><span class="dot" style="background:var(--sky)">📞</span><div>Tele-MANAS 14416<small>Help, one tap away</small></div></div>
+      </div>
+    </div>
+
+    <div class="stats reveal">
+      <div class="stat"><b>5</b><span>validated screening tools</span></div>
+      <div class="stat"><b>10–15 min</b><span>for a full assessment</span></div>
+      <div class="stat"><b>1 tap</b><span>to the Tele-MANAS helpline</span></div>
+      <div class="stat"><b>Light &amp; dark</b><span>themes, private sign-in</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">Features</div>
+        <h2>Small, daily habits. A clearer picture over time.</h2>
+        <p>Everything in Peace is built around one idea: check in regularly, notice patterns early, and know where to turn for help.</p>
+      </div>
+
+      <article class="feature reveal">
+        <div class="feature-media">
+          <div class="phone"><img data-theme-src="home" src="screens/home.jpg" alt="Peace home screen showing today's mood logged as Excellent and a 7-day mood tracker" loading="lazy" /></div>
+        </div>
+        <div>
+          <div class="icon-badge" style="background:var(--amber-soft)">😊</div>
+          <h3>Log your mood in a few seconds</h3>
+          <p>Each day, Peace asks one simple question: <em>how do you feel today?</em> Pick from Sad, Fine, Well or Excellent, and your answer is added to a 7-day tracker.</p>
+          <ul class="ticks">
+            <li>A 7-day view makes changes in mood easy to spot</li>
+            <li>A daily streak helps turn checking in into a habit</li>
+            <li>When you log a low mood, Peace gently offers to connect you with a counsellor</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="feature rev reveal">
+        <div class="feature-media">
+          <div class="phone"><img data-theme-src="mood-quote" src="screens/mood-quote.jpg" alt="Streak badge, a daily quote card and the Start Assessment card" loading="lazy" /></div>
+        </div>
+        <div>
+          <div class="icon-badge" style="background:var(--sky)">✨</div>
+          <h3>A thought for the day, and a nudge to reflect</h3>
+          <p>Every visit brings a short quote to reframe the day, followed by an easy path into a full self-assessment when you want to go deeper.</p>
+          <ul class="ticks">
+            <li>A fresh quote on each visit</li>
+            <li>The assessment is clearly timed (10–15 minutes), so you know what you're starting</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="feature reveal">
+        <div class="feature-media">
+          <div class="phone"><img src="screens/question.jpg" alt="An assessment question: Section 1 of 3, question 1 of 15, stomach pain" loading="lazy" /></div>
+          <div class="phone small"><img src="screens/instructions.jpg" alt="Assessment instructions: read carefully, be honest, no time limit" loading="lazy" /></div>
+        </div>
+        <div>
+          <div class="icon-badge" style="background:var(--sky)">🧠</div>
+          <h3>Validated self-screening, one question at a time</h3>
+          <p>Peace uses standardised questionnaires that healthcare professionals use around the world, split into short sections with a clear progress bar.</p>
+          <div class="pills">
+            <span class="pill">PHQ-9</span><span class="pill">GAD-7</span><span class="pill">PHQ-15</span><span class="pill">PHQ panic module</span><span class="pill">DASS-42</span>
+          </div>
+          <ul class="ticks">
+            <li>Covers depression, anxiety, stress, panic and physical symptoms</li>
+            <li>No time limit, with tips for answering honestly and calmly</li>
+            <li>DASS-42 is optional, taken after the PHQ sections</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="feature rev reveal">
+        <div class="feature-media">
+          <div class="phone"><img data-theme-src="progress" src="screens/progress.jpg" alt="Your Progress: latest PHQ-9, GAD-7, PHQ-15 and DASS-42 scores with change indicators" loading="lazy" /></div>
+          <div class="phone small"><img data-theme-src="result" src="screens/result.jpg" alt="Test result detail explaining what a PHQ-9 score means" loading="lazy" /></div>
+        </div>
+        <div>
+          <div class="icon-badge" style="background:#FDE9E3">📈</div>
+          <h3>See your progress, in plain language</h3>
+          <p>Your latest scores appear on the home screen, with arrows showing how each one changed since your previous assessment. Every past result is saved in your history.</p>
+          <ul class="ticks">
+            <li>Scores for PHQ-9, GAD-7, PHQ-15 and each DASS-42 subscale</li>
+            <li>Each score comes with a plain-language explanation of its severity range</li>
+            <li>A dated test history you can open on your phone during a counselling session</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="feature reveal">
+        <div class="feature-media">
+          <div class="phone"><img data-theme-src="helpline" src="screens/helpline.jpg" alt="Contact Tele-MANAS dialog with toll-free numbers 14416 and 1-800 891 4416 and a Call Now button" loading="lazy" /></div>
+        </div>
+        <div>
+          <div class="icon-badge" style="background:#E3F4EA">📞</div>
+          <h3>Help is always one tap away</h3>
+          <p>"Talk with a Counselor" connects you to <b>Tele-MANAS</b>, the Government of India's free national tele-mental-health service. Tap <em>Call Now</em> and your phone dials it.</p>
+          <ul class="ticks">
+            <li>Toll-free: <b>14416</b> or <b>1-800 891 4416</b></li>
+            <li>Built into the home screen, not buried in a menu</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="feature rev reveal">
+        <div class="feature-media">
+          <div class="phone"><img data-theme-src="settings" src="screens/settings.jpg" alt="Settings: about, assessment tools, privacy policy, theme, logout and delete account" loading="lazy" /></div>
+          <div class="phone small"><img src="screens/assessment-tools.jpg" alt="Assessment Tools page explaining PHQ-9 and its scoring range" loading="lazy" /></div>
+        </div>
+        <div>
+          <div class="icon-badge" style="background:var(--sky)">🔒</div>
+          <h3>Private, and in your control</h3>
+          <p>You sign in with your phone number, so there's no password to remember. Your data is linked to your own account, and only that account can read it.</p>
+          <ul class="ticks">
+            <li>A built-in guide explains every questionnaire and its scoring</li>
+            <li>A clear privacy policy, one tap away in Settings</li>
+            <li>Light, dark or system theme</li>
+            <li>Delete your account at any time from Settings</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="assess" id="assessments">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">Assessments</div>
+        <h2>Established instruments, familiar to clinicians.</h2>
+        <p>Peace uses published, widely used screening questionnaires and the standard severity bands for each, so counsellors will recognise the results straight away.</p>
+      </div>
+      <div class="table-wrap reveal">
+        <table>
+          <thead>
+            <tr><th>Instrument</th><th>What it screens</th><th>Items</th><th>Looks back</th><th>Severity bands shown</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>PHQ-9</b><small>Patient Health Questionnaire</small></td>
+              <td>Depression</td><td>9</td><td>2 weeks</td>
+              <td><div class="bands"><span class="band">0–4 Minimal</span><span class="band">5–9 Mild</span><span class="band">10–14 Moderate</span><span class="band">15–19 Mod. severe</span><span class="band">20–27 Severe</span></div></td>
+            </tr>
+            <tr>
+              <td><b>GAD-7</b><small>Generalized Anxiety Disorder</small></td>
+              <td>Anxiety</td><td>7</td><td>2 weeks</td>
+              <td><div class="bands"><span class="band">0–4 Minimal</span><span class="band">5–9 Mild</span><span class="band">10–14 Moderate</span><span class="band">15–21 Severe</span></div></td>
+            </tr>
+            <tr>
+              <td><b>PHQ-15</b><small>Somatic symptoms</small></td>
+              <td>Physical symptoms</td><td>15</td><td>4 weeks</td>
+              <td><div class="bands"><span class="band">0–4 Minimal</span><span class="band">5–9 Low</span><span class="band">10–14 Medium</span><span class="band">15–30 High</span></div></td>
+            </tr>
+            <tr>
+              <td><b>PHQ panic module</b><small>Follow-up questions</small></td>
+              <td>Panic symptoms</td><td>4</td><td>—</td>
+              <td><small>Screening follow-up</small></td>
+            </tr>
+            <tr>
+              <td><b>DASS-42</b><small>Depression Anxiety Stress Scales · optional</small></td>
+              <td>Depression, anxiety, stress</td><td>42<small>14 per scale</small></td><td>—</td>
+              <td><div class="bands"><span class="band">Normal</span><span class="band">Mild</span><span class="band">Moderate</span><span class="band">Severe</span><span class="band">Extremely severe</span></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note reveal">
+        <span aria-hidden="true">ℹ️</span>
+        <div><b>A screening tool, not a diagnosis.</b> Peace helps people notice how they're doing and decide when to seek help. It does not replace a qualified mental health professional, and results should be interpreted by one.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="wrap">
+      <div class="gallery-top reveal">
+        <div class="section-head">
+          <div class="kicker">Screens</div>
+          <h2>A look inside the app.</h2>
+          <p>Real screenshots from the Android app. Swipe through, and switch themes.</p>
+        </div>
+        <div class="toggle" role="group" aria-label="App theme in screenshots">
+          <button type="button" data-set-theme="dark" aria-pressed="true">Dark</button>
+          <button type="button" data-set-theme="light" aria-pressed="false">Light</button>
+        </div>
+      </div>
+      <div class="rail reveal" tabindex="0" aria-label="App screenshots">
+        <figure><div class="phone"><img data-theme-src="home" src="screens/home.jpg" alt="Home screen with today's mood" loading="lazy" /></div><figcaption>Home<small>Greeting and today's mood</small></figcaption></figure>
+        <figure><div class="phone"><img data-theme-src="mood-quote" src="screens/mood-quote.jpg" alt="Streak, quote and assessment cards" loading="lazy" /></div><figcaption>Daily check-in<small>Streak and quote of the day</small></figcaption></figure>
+        <figure><div class="phone"><img src="screens/instructions.jpg" alt="Assessment guidelines" loading="lazy" /></div><figcaption>Before you begin<small>Guidelines and tips</small></figcaption></figure>
+        <figure><div class="phone"><img src="screens/question.jpg" alt="Assessment question" loading="lazy" /></div><figcaption>Assessment<small>One section at a time</small></figcaption></figure>
+        <figure><div class="phone"><img data-theme-src="progress" src="screens/progress.jpg" alt="Progress overview" loading="lazy" /></div><figcaption>Your progress<small>Latest scores and changes</small></figcaption></figure>
+        <figure><div class="phone"><img data-theme-src="history" src="screens/history.jpg" alt="Test history list" loading="lazy" /></div><figcaption>Test history<small>Every past result</small></figcaption></figure>
+        <figure><div class="phone"><img data-theme-src="result" src="screens/result.jpg" alt="Result explanation" loading="lazy" /></div><figcaption>Result detail<small>Plain-language explanation</small></figcaption></figure>
+        <figure><div class="phone"><img data-theme-src="helpline" src="screens/helpline.jpg" alt="Tele-MANAS helpline dialog" loading="lazy" /></div><figcaption>Talk to a counsellor<small>Tele-MANAS, one tap</small></figcaption></figure>
+        <figure><div class="phone"><img src="screens/assessment-tools.jpg" alt="Assessment tools guide" loading="lazy" /></div><figcaption>Assessment guide<small>What each tool measures</small></figcaption></figure>
+        <figure><div class="phone"><img data-theme-src="settings" src="screens/settings.jpg" alt="Settings screen" loading="lazy" /></div><figcaption>Settings<small>Theme, privacy, account</small></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="assess" id="counsellors">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">For counsellors &amp; institutions</div>
+        <h2>A bridge between check-ins and conversations.</h2>
+        <p>Peace was developed at Puducherry Technological University to make support easier to reach and to reduce stigma. Here's where it fits alongside a counselling service.</p>
+      </div>
+      <div class="cards reveal">
+        <div class="card">
+          <div class="icon-badge" style="background:var(--sky)">🧭</div>
+          <h3>Earlier self-awareness</h3>
+          <p>Daily mood logging and self-screening help people notice changes early, before they become harder to manage.</p>
+        </div>
+        <div class="card">
+          <div class="icon-badge" style="background:var(--amber-soft)">🗂️</div>
+          <h3>Better-informed sessions</h3>
+          <p>A student can open their dated history of standard scores on their phone and walk through it with a counsellor, instead of trying to describe weeks from memory.</p>
+        </div>
+        <div class="card">
+          <div class="icon-badge" style="background:#E3F4EA">🤝</div>
+          <h3>A clear path to help</h3>
+          <p>A low mood brings up a prompt to talk to someone, and the Tele-MANAS helpline is always one tap from the home screen.</p>
+        </div>
+      </div>
+      <div class="isnt reveal">
+        <div class="card">
+          <h3>What Peace is</h3>
+          <ul>
+            <li>A private, self-directed check-in and screening app</li>
+            <li>Built on published, widely used instruments with standard scoring</li>
+            <li>A way to keep a personal record to share at your own choice</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What Peace is not</h3>
+          <ul>
+            <li>A diagnostic tool or a replacement for professional care</li>
+            <li>A crisis service. In an emergency, call 112 or Tele-MANAS 14416</li>
+            <li>A monitoring tool. There's no dashboard for institutions to view anyone's results</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cta-row reveal" style="margin-top:28px">
+        <a class="btn btn-ghost" href="downloads/Peace-Brochure.pdf" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+          Download the brochure (PDF)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="kicker">Get started</div>
+        <h2>Install in about two minutes.</h2>
+        <p>Peace is downloaded straight from this page. It isn't on the Play Store, so Android will ask you to allow the install once.</p>
+      </div>
+      <div class="steps reveal">
+        <div class="step"><h3>Download</h3><p>Tap <b>Download for Android</b> on this page to save <code>peace.apk</code>.</p></div>
+        <div class="step"><h3>Allow the install</h3><p>Open the file. If Android asks, allow installs from your browser or Files app for this one time.</p></div>
+        <div class="step"><h3>Sign in</h3><p>Enter your phone number and the one-time code sent to you by SMS.</p></div>
+        <div class="step"><h3>Check in</h3><p>Set up your profile, log today's mood, and take your first assessment when you're ready.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="crisis reveal" role="note" aria-label="Crisis support">
+        <div class="phone-ic" aria-hidden="true">☎️</div>
+        <div>
+          <div class="big">Need to talk now? 14416</div>
+          <p>Tele-MANAS is free and toll-free (also 1-800 891 4416). If you are in immediate danger, call 112.</p>
+        </div>
+        <a class="btn" href="tel:14416">Call 14416</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap reveal">
+      <img src="logo.png" alt="" style="width:64px;margin:0 auto 18px" />
+      <h2>Take a moment for yourself, every day.</h2>
+      <p>Peace is free. Download it, check in today, and see how you're doing over time.</p>
+      <a class="btn btn-primary" href="downloads/peace.apk" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+        Download for Android
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© Puducherry Technological University · Department of Electronics and Communication Engineering</div>
+    <div class="foot-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="downloads/Peace-Brochure.pdf">Brochure (PDF)</a>
+      <a href="mailto:info.ptupeace@gmail.com">info.ptupeace@gmail.com</a>
+      <a href="https://github.com/gowthamaanp/peace">Source</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var buttons = document.querySelectorAll('[data-set-theme]');
+    function setTheme(theme) {
+      document.querySelectorAll('img[data-theme-src]').forEach(function (img) {
+        var name = img.getAttribute('data-theme-src');
+        img.src = 'screens/' + name + (theme === 'light' ? '-light' : '') + '.jpg';
+      });
+      buttons.forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-set-theme') === theme));
+      });
+    }
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { setTheme(b.getAttribute('data-set-theme')); });
+    });
+    if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('light');
+    }
+
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
 </body>
 </html>
